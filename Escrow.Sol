@@ -1,0 +1,33 @@
+//SPDX-License-Identifier: MIT
+
+pragma solidity ^0.8.0;
+
+contract EscrowLimaSmart {
+ function executeSale(uint256 _Id) public payable {
+        require(retailerApprove[msg.sender] == true, "Not approved ");
+
+         //Transfer the proceeds from the sale to the farmer
+
+        uint price = idToListedGood[_tokenId].price;
+        address farmer = idToListedGood[_tokenId].owner;
+
+        payable(farmer).transfer(price);
+
+
+    }
+
+      function buyGoods(uint256 tokenId) public payable {
+        uint price = idToListedGood[tokenId].price;
+
+        require(retailerAddresses[msg.sender] == true, "Not registered as a retailer");
+        require(msg.value == price, "Incorrect amount");
+        
+        //transfer money to escrow
+        payable(address(this)).transfer(msg.value); 
+
+    }
+
+       function retailerApproval(bool approve) public {
+       retailerApprove[msg.sender] = approve;
+    }
+}
